@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react'
+import {Button, Grid, TextField, Box, Typography, Container, withStyles, spacing} from '@material-ui/core';
 
 var ix;
 var iy;
@@ -9,7 +10,7 @@ var dx;
 var dy;
 
 const CANVASWIDTH = window.innerWidth;
-const CANVASHEIGHT = 250;
+const CANVASHEIGHT = 500;
 
 const Canvas = props => {
   
@@ -26,6 +27,13 @@ const Canvas = props => {
         x += dx * l;
         y += dy * l;
         ctx.lineTo(x, y);
+    }
+
+    // based on current dx/dy
+    const moveCtx = (ctx, l) => {
+        x += dx * l;
+        y += dy * l;
+        ctx.moveTo(x, y);
     }
 
     const drawPower = ctx  => {
@@ -67,9 +75,28 @@ const Canvas = props => {
         drawWire(ctx, 50);
         drawPower(ctx);
     }
+
+    const beginNormal = (ctx, a, b) => {
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = "#000";
+        ctx.beginPath();
+        x = a;
+        y = b;
+        d = 0;
+        dx = 1;
+        dy = 0;
+        ix = x;
+        iy = y;
+        ctx.moveTo(x, y);
+    }
     
     const endCircuit = ctx => {
         ctx.lineTo(ix, iy);
+        ctx.stroke();
+    }
+
+    const endHere = ctx => {
+        ctx.moveTo(ix, iy);
         ctx.stroke();
     }
 
@@ -154,10 +181,202 @@ const Canvas = props => {
         drawCapacitor(ctx);
     }
 
+    const drawFrom2DArray = (arr, ctx) => {
+        var beginY = 50;
+        var beginX = 100;
+        for(let i = 0; i < arr.length; i++) {
+            if (i % 2 == 0) {;
+                for (let j = 0; j < arr.length; j++) {
+                    if (j == 0) {
+                        beginNormal(ctx, beginX, beginY);
+                        drawWire(ctx, 50);
+                        continue;
+                    }
+
+                    if (arr[i][j] === 0) {
+                        drawWire(ctx, 50);
+                    }
+                    else if (arr[i][j] === 1) {
+                        drawResistor(ctx);
+                    }
+                    else if (arr[i][j] === 3) {
+                        drawCapacitor(ctx);
+                    }
+                    else if (arr[i][j] === 2) {
+                        drawInductor(ctx);
+                    }
+                    else if (arr[i][j] === 10) {
+                        drawPower(ctx);
+                    }
+                    else if (arr[i][j] === -1) {
+                        moveCtx(ctx, 50);
+                    }
+                }
+                endHere(ctx);
+            }
+            else {
+                var baseX = ix;
+                var baseY = iy;
+           
+                for (let j = 0; j < arr.length; j++) {
+                    // if (j % 2 != 0) continue;
+
+                    if (j == 0) {
+                        beginNormal(ctx, baseX, baseY);
+                        turnClockwise(ctx);
+                    }
+
+                    if (arr[i][j] === 0) {
+                        drawWire(ctx, 50);
+                        console.log("wire drawn")
+                    }
+                    else if (arr[i][j] === 1) {
+                        drawResistor(ctx);
+                    }
+                    else if (arr[i][j] === 3) {
+                        drawCapacitor(ctx);
+                    }
+                    else if (arr[i][j] === 2) {
+                        drawInductor(ctx);
+                    }
+                    else if (arr[i][j] === 10) {
+                        drawPower(ctx);
+                    }
+                    else if (arr[i][j] === -1) {
+                        moveCtx(ctx, 50);
+                    }
+                    
+                    moveCtx(ctx, -50);
+                    turnCounterClockwise(ctx);
+                    console.log(arr.length);
+                    console.log(j);
+                     if (j == 0) {
+                        moveCtx(ctx, 75);
+                     }
+                     else if (j === arr.length - 2) {
+                        moveCtx(ctx, 75);
+                     }
+                    else (
+                        moveCtx(ctx, 50)
+                    )
+           
+                    turnClockwise(ctx);
+
+                }
+                endHere(ctx);
+        
+                
+                beginY += 50;
+            }
+        }
+    }
+
     const clear = ctx => {
         ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
     }
 
+    const testlist =  [
+        [
+          0, 2, 0, 1, 0, 0, 0,
+          1, 0, 1, 0, 0, 0, 0,
+          0, 1, 0, 1, 0
+        ],
+        [
+           0, -1,  1, -1,  0, -1,  0,
+          -1,  0, -1,  0, -1,  1, -1,
+           0, -1,  0, -1,  1
+        ],
+        [
+          0, 1, 0, 1, 0, 1, 0,
+          0, 0, 1, 0, 0, 0, 1,
+          0, 0, 0, 1, 0
+        ],
+        [
+           0, -1,  1, -1,  1, -1,  0,
+          -1,  0, -1,  0, -1,  1, -1,
+           1, -1,  0, -1,  1
+        ],
+        [
+          0, 0, 0, 0, 0, 0, 0,
+          1, 0, 1, 0, 1, 0, 1,
+          0, 0, 0, 1, 0
+        ],
+        [
+           1, -1,  0, -1,  1, -1,  1,
+          -1,  0, -1,  0, -1,  1, -1,
+           1, -1,  0, -1,  1
+        ],
+        [
+          0, 0, 0, 0, 0, 1, 0,
+          0, 0, 0, 0, 0, 0, 1,
+          0, 0, 0, 1, 0
+        ],
+        [
+           1, -1,  0, -1,  0, -1,  0,
+          -1,  0, -1,  0, -1,  1, -1,
+           1, -1,  0, -1,  0
+        ],
+        [
+          0, 0, 0, 0, 0, 0, 0,
+          0, 0, 1, 0, 0, 0, 1,
+          0, 1, 0, 1, 0
+        ],
+        [
+           1, -1,  1, -1,  0, -1,  0,
+          -1,  0, -1,  0, -1,  0, -1,
+           1, -1,  1, -1,  0
+        ],
+        [
+          0, 0, 0, 0, 0, 1, 0,
+          1, 0, 1, 0, 0, 0, 0,
+          0, 0, 0, 1, 0
+        ],
+        [
+           1, -1,  1, -1,  1, -1,  1,
+          -1,  0, -1,  1, -1,  1, -1,
+           0, -1,  1, -1,  1
+        ],
+        [
+          0, 0, 0, 1, 0, 1, 0,
+          0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 0
+        ],
+        [
+           1, -1,  0, -1,  0, -1,  1,
+          -1,  0, -1,  1, -1,  1, -1,
+           1, -1,  1, -1,  1
+        ],
+        [
+          0, 1, 0, 0, 0, 1, 0,
+          1, 0, 1, 0, 1, 0, 0,
+          0, 0, 0, 1, 0
+        ],
+        [
+           1, -1,  1, -1,  1, -1,  0,
+          -1,  1, -1,  0, -1,  0, -1,
+           0, -1,  1, -1,  1
+        ],
+        [
+          0, 1, 0, 1, 0, 1, 0,
+          1, 0, 0, 0, 1, 0, 0,
+          0, 1, 0, 1, 0
+        ],
+        [
+           0, -1,  0, -1,  1, -1,  0,
+          -1,  0, -1,  0, -1,  0, -1,
+           1, -1,  1, -1,  1
+        ],
+        [
+          0, 0, 0, 0, 0, 1, 0,
+          1, 0, 0, 0, 1, 0, 1,
+          0, 1, 0, 0, 0
+        ]
+      ];
+  
+
+      const newCircuit = () => {
+
+      }
     useEffect(() => {
         
         const canvas = canvasRef.current;
@@ -166,43 +385,77 @@ const Canvas = props => {
 
         const context = canvas.getContext('2d');
 
-        beginCircuit(context, 700, 50);
-        drawWire(context, 50);
-        turnClockwise();
-        drawCapacitor(context);
-        turnClockwise();
-        drawWire(context, 50);
-        drawResistor(context);
-        drawWire(context, 50);
-        turnClockwise();
-        endCircuit(context);
+        drawFrom2DArray(testlist, context);
 
-        beginCircuit(context, 700, 50);
-        drawWire(context, 50);
-        turnClockwise();
-        drawWire(context, 100);
-        turnClockwise();
-        drawWire(context, 50);
-        drawResistor(context);
-        drawWire(context, 50);
-        turnClockwise();
-        endCircuit(context);
+        // beginNormal(context, 700, 100);
+        // drawWire(context, 50);
+        // endCircuit(context);
+        // first 0 & 2
+        // beginCircuit(context, 700, 50);
+        // moveCtx(context, 50);
+        // drawResistor(context);
+        // endHere(context);
+        // drawWire(context, 50);
+        // drawWire(context, 50);
+        // drawWire(context, 50);
+        // turnClockwise();
+        // drawWire(context, 50);
+        // turnClockwise();
+        // drawWire(context, 50);
+        // drawWire(context, 50);
+        // drawWire(context, 50);
+        // drawResistor(context);
+        // drawWire(context, 50);
+        
+        // drawWire(context, 50);
+        // turnClockwise();
+        // drawCapacitor(context);
+        // turnClockwise();
+        // drawWire(context, 50);
+        // drawResistor(context);
+        // drawWire(context, 50);
+        // turnClockwise();
+        // endCircuit(context);
 
-        beginCircuit(context, 700, 50);
-        drawWire(context, 50);
-        turnClockwise();
-        drawWire(context, 150);
-        turnClockwise();
-        drawWire(context, 50);
-        drawResistor(context);
-        drawWire(context, 50);
-        turnClockwise();
-        endCircuit(context);
+        // beginCircuit(context, 700, 50);
+        // drawWire(context, 50);
+        // turnClockwise();
+        // drawWire(context, 100);
+        // turnClockwise();
+        // drawWire(context, 50);
+        // drawResistor(context);
+        // drawWire(context, 50);
+        // turnClockwise();
+        // endCircuit(context);
+
+        // beginCircuit(context, 700, 50);
+        // drawWire(context, 50);
+        // turnClockwise();
+        // drawWire(context, 150);
+        // turnClockwise();
+        // drawWire(context, 50);
+        // drawResistor(context);
+        // drawWire(context, 50);
+        // turnClockwise();
+        // endCircuit(context);
         
         
     } )
     
-    return <canvas ref={canvasRef} {...props}/>
+    return ( 
+        <div>
+            <Grid>
+            <canvas ref={canvasRef} {...props}/>
+                <Grid item>
+                        <Button variant="contained" color="primary" onClick={newCircuit}>
+                            New Circuit
+                        </Button>
+                </Grid>
+            </Grid>
+
+        </div>
+    
+    );
         
 }
 

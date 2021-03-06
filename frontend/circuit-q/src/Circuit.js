@@ -155,11 +155,7 @@ export default class Circuit extends React.Component {
                 </Grid>
             </Grid>
 
-            <Grid item>
-                <Button variant="contained" color="primary" onClick={this.resetInfo}>
-                    New Circuit
-                </Button>
-            </Grid>
+            
 
             <Grid item xs={12} align="center">
                 {info}

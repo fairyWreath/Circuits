@@ -108,10 +108,78 @@ class CircuitGraph {
 }
 
 
-let CG = new CircuitGraph(4);
-CG.addEdge(0, 1);
-CG.addEdge(0, 2);
-CG.addEdge(1, 3);
-CG.addEdge(2, 3);
-CG.printCircuit();
+// let CG = new CircuitGraph(4);
+// CG.addEdge(0, 1);
+// CG.addEdge(0, 2);
+// CG.addEdge(1, 3);
+// CG.addEdge(2, 3);
+// CG.printCircuit();
 
+function randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+
+function generateRandom() {
+    var res = [];
+
+    var intRow = randomIntFromInterval(40, 40);
+    var intCol = randomIntFromInterval(40, 40);
+
+    console.log(intRow);
+    console.log(intCol);
+
+    // -1 for no wire
+    // number 0 for a node or a wire
+    // 1 for resistor
+    // 10 for power source
+    // 2 for inductor
+    // 3 for capacitor
+
+    for (let i = 0; i < intRow * 2 - 1; i++) {
+        var startIsNode = false;
+        if (i % 2 == 0) startIsNode = true;
+        res[i] = [];
+        for (let j = 0; j < intCol * 2 - 1; j++) {
+            if (i == 0 && j == 1) {
+                res[i][j] = 10;
+                continue;
+            }
+
+            if (startIsNode) {
+                if (j % 2 == 0) {
+                    res[i][j] = 0;
+                }
+                else {
+                    var intRand = randomIntFromInterval(0, 3);
+                    res[i][j] = intRand;
+                }
+            }
+
+            else {
+                if (i == 1 && j == 0) {
+                    res[i][j] = 0;
+                    continue;
+                }
+
+                if (j % 2 != 0) {
+                    res[i][j] = -1;
+                }
+                else {
+                    var intRand = randomIntFromInterval(0, 3);
+                    res[i][j] = intRand;
+                }
+            }
+            
+        }
+    }
+
+
+    return res;
+}
+
+
+
+
+var test = generateRandom();
+console.log(test);

@@ -108,23 +108,18 @@ class CircuitGraph {
 }
 
 
-// let CG = new CircuitGraph(4);
-// CG.addEdge(0, 1);
-// CG.addEdge(0, 2);
-// CG.addEdge(1, 3);
-// CG.addEdge(2, 3);
-// CG.printCircuit();
+
 
 function randomIntFromInterval(min, max) { // min and max included 
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 
-function generateRandom() {
+export function generateRandom() {
     var res = [];
 
-    var intRow = randomIntFromInterval(40, 40);
-    var intCol = randomIntFromInterval(40, 40);
+    var intRow = randomIntFromInterval(5, 5);
+    var intCol = randomIntFromInterval(5, 5);
 
     console.log(intRow);
     console.log(intCol);

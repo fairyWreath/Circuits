@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 import {Button, Grid, TextField, Box, Typography, Container, withStyles, spacing} from '@material-ui/core';
+import {generateRandom} from './Engine.js';
 
 var ix;
 var iy;
@@ -10,10 +11,9 @@ var dx;
 var dy;
 
 const CANVASWIDTH = window.innerWidth;
-const CANVASHEIGHT = 500;
+const CANVASHEIGHT = 250;
 
 const Canvas = props => {
-  
     const canvasRef = useRef(null);
   
     const draw = ctx => {
@@ -183,7 +183,7 @@ const Canvas = props => {
 
     const drawFrom2DArray = (arr, ctx) => {
         var beginY = 50;
-        var beginX = 100;
+        var beginX = 550;
         for(let i = 0; i < arr.length; i++) {
             if (i % 2 == 0) {;
                 for (let j = 0; j < arr.length; j++) {
@@ -219,8 +219,6 @@ const Canvas = props => {
                 var baseY = iy;
            
                 for (let j = 0; j < arr.length; j++) {
-                    // if (j % 2 != 0) continue;
-
                     if (j == 0) {
                         beginNormal(ctx, baseX, baseY);
                         turnClockwise(ctx);
@@ -271,182 +269,37 @@ const Canvas = props => {
         }
     }
 
+
     const clear = ctx => {
         ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
     }
 
-    const testlist =  [
-        [
-          0, 2, 0, 1, 0, 0, 0,
-          1, 0, 1, 0, 0, 0, 0,
-          0, 1, 0, 1, 0
-        ],
-        [
-           0, -1,  1, -1,  0, -1,  0,
-          -1,  0, -1,  0, -1,  1, -1,
-           0, -1,  0, -1,  1
-        ],
-        [
-          0, 1, 0, 1, 0, 1, 0,
-          0, 0, 1, 0, 0, 0, 1,
-          0, 0, 0, 1, 0
-        ],
-        [
-           0, -1,  1, -1,  1, -1,  0,
-          -1,  0, -1,  0, -1,  1, -1,
-           1, -1,  0, -1,  1
-        ],
-        [
-          0, 0, 0, 0, 0, 0, 0,
-          1, 0, 1, 0, 1, 0, 1,
-          0, 0, 0, 1, 0
-        ],
-        [
-           1, -1,  0, -1,  1, -1,  1,
-          -1,  0, -1,  0, -1,  1, -1,
-           1, -1,  0, -1,  1
-        ],
-        [
-          0, 0, 0, 0, 0, 1, 0,
-          0, 0, 0, 0, 0, 0, 1,
-          0, 0, 0, 1, 0
-        ],
-        [
-           1, -1,  0, -1,  0, -1,  0,
-          -1,  0, -1,  0, -1,  1, -1,
-           1, -1,  0, -1,  0
-        ],
-        [
-          0, 0, 0, 0, 0, 0, 0,
-          0, 0, 1, 0, 0, 0, 1,
-          0, 1, 0, 1, 0
-        ],
-        [
-           1, -1,  1, -1,  0, -1,  0,
-          -1,  0, -1,  0, -1,  0, -1,
-           1, -1,  1, -1,  0
-        ],
-        [
-          0, 0, 0, 0, 0, 1, 0,
-          1, 0, 1, 0, 0, 0, 0,
-          0, 0, 0, 1, 0
-        ],
-        [
-           1, -1,  1, -1,  1, -1,  1,
-          -1,  0, -1,  1, -1,  1, -1,
-           0, -1,  1, -1,  1
-        ],
-        [
-          0, 0, 0, 1, 0, 1, 0,
-          0, 0, 0, 0, 0, 0, 0,
-          0, 0, 0, 0, 0
-        ],
-        [
-           1, -1,  0, -1,  0, -1,  1,
-          -1,  0, -1,  1, -1,  1, -1,
-           1, -1,  1, -1,  1
-        ],
-        [
-          0, 1, 0, 0, 0, 1, 0,
-          1, 0, 1, 0, 1, 0, 0,
-          0, 0, 0, 1, 0
-        ],
-        [
-           1, -1,  1, -1,  1, -1,  0,
-          -1,  1, -1,  0, -1,  0, -1,
-           0, -1,  1, -1,  1
-        ],
-        [
-          0, 1, 0, 1, 0, 1, 0,
-          1, 0, 0, 0, 1, 0, 0,
-          0, 1, 0, 1, 0
-        ],
-        [
-           0, -1,  0, -1,  1, -1,  0,
-          -1,  0, -1,  0, -1,  0, -1,
-           1, -1,  1, -1,  1
-        ],
-        [
-          0, 0, 0, 0, 0, 1, 0,
-          1, 0, 0, 0, 1, 0, 1,
-          0, 1, 0, 0, 0
-        ]
-      ];
-  
+    var circuitArr = [];
 
-      const newCircuit = () => {
+    const newCircuit = () => {
+        circuitArr = generateRandom();
 
-      }
-    useEffect(() => {
-        
+        // setup canvas based on circuit size
         const canvas = canvasRef.current;
         canvas.height = CANVASHEIGHT;
         canvas.width = CANVASWIDTH;
 
         const context = canvas.getContext('2d');
 
-        drawFrom2DArray(testlist, context);
+        drawFrom2DArray(circuitArr, context);   
+    }
 
-        // beginNormal(context, 700, 100);
-        // drawWire(context, 50);
-        // endCircuit(context);
-        // first 0 & 2
-        // beginCircuit(context, 700, 50);
-        // moveCtx(context, 50);
-        // drawResistor(context);
-        // endHere(context);
-        // drawWire(context, 50);
-        // drawWire(context, 50);
-        // drawWire(context, 50);
-        // turnClockwise();
-        // drawWire(context, 50);
-        // turnClockwise();
-        // drawWire(context, 50);
-        // drawWire(context, 50);
-        // drawWire(context, 50);
-        // drawResistor(context);
-        // drawWire(context, 50);
-        
-        // drawWire(context, 50);
-        // turnClockwise();
-        // drawCapacitor(context);
-        // turnClockwise();
-        // drawWire(context, 50);
-        // drawResistor(context);
-        // drawWire(context, 50);
-        // turnClockwise();
-        // endCircuit(context);
 
-        // beginCircuit(context, 700, 50);
-        // drawWire(context, 50);
-        // turnClockwise();
-        // drawWire(context, 100);
-        // turnClockwise();
-        // drawWire(context, 50);
-        // drawResistor(context);
-        // drawWire(context, 50);
-        // turnClockwise();
-        // endCircuit(context);
-
-        // beginCircuit(context, 700, 50);
-        // drawWire(context, 50);
-        // turnClockwise();
-        // drawWire(context, 150);
-        // turnClockwise();
-        // drawWire(context, 50);
-        // drawResistor(context);
-        // drawWire(context, 50);
-        // turnClockwise();
-        // endCircuit(context);
-        
-        
-    } )
-    
     return ( 
         <div>
-            <Grid>
+            <Grid
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+            spacing = {3}>
             <canvas ref={canvasRef} {...props}/>
-                <Grid item>
+                <Grid item align="center" xs={12}>
                         <Button variant="contained" color="primary" onClick={newCircuit}>
                             New Circuit
                         </Button>

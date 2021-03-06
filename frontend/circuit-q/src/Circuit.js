@@ -133,7 +133,7 @@ export default class Circuit extends React.Component {
             spacing = {3}
             >
 
-            <Grid item>
+            <Grid item xs = {12}>
                 <Canvas />
             </Grid>
 

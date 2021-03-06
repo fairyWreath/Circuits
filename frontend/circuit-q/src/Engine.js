@@ -1,3 +1,5 @@
+// import { usolve } from 'mathjs'
+
 class CircuitGraph {
 
     constructor(nodes) {
@@ -5,24 +7,25 @@ class CircuitGraph {
         this.nodes = nodes;
         this.resistors = {};
         this.vSources = {};
+        this.nodeValues = {};
 
         for(let i = 0; i < nodes; i++) {
             this.adjacencyMatrix[i] = [];
-            for(let j = 0; j < nodes - 1; j++) {
+            for(let j = 0; j < nodes; j++) {
                 this.adjacencyMatrix[i].push(0);
             }
         }
     
         for(let i = 0; i < nodes; i++) {
             this.resistors[i] = [];
-            for(let j = 0; j < nodes - 1; j++) {
+            for(let j = 0; j < nodes; j++) {
                 this.resistors[i].push(0);
             }
         }
 
         for(var i = 0; i < nodes; i++) {
             this.vSources[i] = [];
-            for(var j = 0; j < nodes - 1; j++) {
+            for(var j = 0; j < nodes; j++) {
                 this.vSources[i].push(0);
             }
         }
@@ -30,8 +33,8 @@ class CircuitGraph {
     }
 
     addEdge(source, destination) {
-        this.adjacencyList[source][destination] = 1;
-        this.adjacencyList[destination][source] = 1;
+        this.adjacencyMatrix[source][destination] = 1;
+        this.adjacencyMatrix[destination][source] = 1;
     }
 
     // 2 for resistor
@@ -49,21 +52,21 @@ class CircuitGraph {
     resetCircuit(nodes = this.nodes) {
         for(let i = 0; i < nodes; i++) {
             this.adjacencyMatrix[i] = [];
-            for(let j = 0; j < nodes - 1; i++) {
+            for(let j = 0; j < nodes; i++) {
                 this.adjacencyMatrix[i].push(0);
             }
         }
 
         for(let i = 0; i < nodes; i++) {
             this.resistors[i] = [];
-            for(let j = 0; j < nodes - 1; i++) {
+            for(let j = 0; j < nodes; i++) {
                 this.resistors[i].push(0);
             }
         }
 
         for(var i = 0; i < nodes; i++) {
             this.vSources[i] = [];
-            for(var j = 0; j < nodes - 1; i++) {
+            for(var j = 0; j < nodes; i++) {
                 this.vSources[i].push(0);
             }
         }
@@ -76,10 +79,39 @@ class CircuitGraph {
            console.log(this.adjacencyMatrix[i]);
         }
     }
+
+
+
+
+    generate(nodes, components) {
+
+    }
+
+    solve() {
+
+    }
+
+    getRandomeNodeValue() {
+
+
+        var name = "";
+
+        // return pair of name and value
+        return [name, 0];
+    }
+
+    getQuestion(nodes, components) {
+        this.generate(nodes, components);
+        this.solve();
+        return this.getRandomeNodeValue;
+    }
 }
 
 
-let CG = new CircuitGraph(5);
-
+let CG = new CircuitGraph(4);
+CG.addEdge(0, 1);
+CG.addEdge(0, 2);
+CG.addEdge(1, 3);
+CG.addEdge(2, 3);
 CG.printCircuit();
 

@@ -1,39 +1,85 @@
-// the graph for our circuit
 class CircuitGraph {
-    constructor() {
-        this.adjacencyList = {};
-      }
 
-    addVertex(vertex) {
-        if (!this.adjacencyList[vertex]) {
-            this.adjacencyList[vertex] = [];
+    constructor(nodes) {
+        this.adjacencyMatrix = {};
+        this.nodes = nodes;
+        this.resistors = {};
+        this.vSources = {};
+
+        for(let i = 0; i < nodes; i++) {
+            this.adjacencyMatrix[i] = [];
+            for(let j = 0; j < nodes - 1; j++) {
+                this.adjacencyMatrix[i].push(0);
+            }
         }
+    
+        for(let i = 0; i < nodes; i++) {
+            this.resistors[i] = [];
+            for(let j = 0; j < nodes - 1; j++) {
+                this.resistors[i].push(0);
+            }
+        }
+
+        for(var i = 0; i < nodes; i++) {
+            this.vSources[i] = [];
+            for(var j = 0; j < nodes - 1; j++) {
+                this.vSources[i].push(0);
+            }
+        }
+
     }
 
     addEdge(source, destination) {
-        if (!this.adjacencyList[source]) {
-            this.addVertex(source);
-        }
-        if (!this.adjacencyList[destination]) {
-            this.addVertex(destination);
-        }
-        this.adjacencyList[source].push(destination);
-        this.adjacencyList[destination].push(source);
+        this.adjacencyList[source][destination] = 1;
+        this.adjacencyList[destination][source] = 1;
     }
 
-    removeEdge(source, destination) {
-        this.adjacencyList[source] = this.adjacencyList[source].filter(vertex => vertex !== destination);
-        this.adjacencyList[destination] = this.adjacencyList[destination].filter(vertex => vertex !== source);
+    // 2 for resistor
+    addResistor(source, destination){
+        this.resistors[source][destination] = 1;
+        this.resistors[destination][source] = 1;
     }
-      
-    removeVertex(vertex) {
-        while (this.adjacencyList[vertex]) {
-          const adjacentVertex = this.adjacencyList[vertex].pop();
-          this.removeEdge(vertex, adjacentVertex);
+
+    // 3 for voltage source
+    addVSource(source, destination) {
+        this.vSources[source][destination] = 1;
+        this.vSources[destination][source] = 1;
+    }
+
+    resetCircuit(nodes = this.nodes) {
+        for(let i = 0; i < nodes; i++) {
+            this.adjacencyMatrix[i] = [];
+            for(let j = 0; j < nodes - 1; i++) {
+                this.adjacencyMatrix[i].push(0);
+            }
         }
-        delete this.adjacencyList[vertex];
-    }  
 
+        for(let i = 0; i < nodes; i++) {
+            this.resistors[i] = [];
+            for(let j = 0; j < nodes - 1; i++) {
+                this.resistors[i].push(0);
+            }
+        }
 
+        for(var i = 0; i < nodes; i++) {
+            this.vSources[i] = [];
+            for(var j = 0; j < nodes - 1; i++) {
+                this.vSources[i].push(0);
+            }
+        }
 
+        this.nodes = nodes;
+    }
+
+    printCircuit() {
+        for(let i = 0; i < this.nodes; i++) {
+           console.log(this.adjacencyMatrix[i]);
+        }
+    }
 }
+
+
+let CG = new CircuitGraph(5);
+
+CG.printCircuit();
+

@@ -1,32 +1,42 @@
-import React, { Component } from "react";
-import {HEIGHT, WIDTH } from "./constants";
+import React from "react";
+import {HEIGHT, WIDTH} from "./constants";
+import ElecComponent from "./ElecComponent";
+import "./style.css";
+// import "./draw.js";
+import Canvas from "./Canvas";
+
+import {Button, Grid, TextField} from '@material-ui/core';
 
 // set up 2d circuit
+const arr = new Array(HEIGHT ** WIDTH).fill(2);
 
-const base = [];
-for (var i = 0; i < HEIGHT; i++) {
-    var curr = [];
-    for (var j = 0; j < WIDTH; j++) {
-        curr.push(2);
-    }
-    base.push(curr);
-}
+// fill arr from circuit information
 
-class ElecComponent extends React.Component {
-    render() {
-        return (
-          <button className="square">
-            {/* TODO */}
-          </button>
-        );
-    }
-}
-
-
-class Circuit extends React.Component {
+export default class Circuit extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            eleComponents: [],
+        };
+    }
+
+    drawCircuit(array) {
+
+    }
+
+    componentDidMount() {
+        const eleComponents = [];
+        var count = 0;
+        for (let i = 0; i < HEIGHT; i++) {
+            const row = [];
+            for (let j = 0; j < WIDTH; j++) {
+                row.push(count);
+                count += 1;
+            }
+            eleComponents.push(row);
+        }
+
+        this.setState({eleComponents});
     }
     
     // class method to render an component
@@ -35,24 +45,43 @@ class Circuit extends React.Component {
     }
 
     render() {
+        const {eleComponents} = this.state;
+
         return (
             <div>
-            HELLO
+            {/* {this.state.eleComponents.map(row => (
+                <div>
+                    {row.map(comp => (
+                        <div>
+                            {comp}
+                        </div>
+                    ))}
+                    row done
+                </div>
+            ))} */}
+
+            <div>
+                <Canvas />
+                {window.innerWidth}<br></br>
+                {window.innerHeight}
             </div>
+
+            <Button variant="contained" color="primary">
+                New Circuit
+            </Button>
+
+            <Button variant="contained" color="primary">
+                Submit
+            </Button>
+
+
+            <form>
+                <TextField id="outlined-basic" label="Answer" variant="outlined" /> 
+            </form>
+
+            </div>
+            
         );
     }
 }
 
-class Generate extends React.Component {
-    render() {
-      return (
-        <button className="square">
-          
-        </button>
-      );
-    }
-}
-
-class Submit extends React.Component {
-
-}

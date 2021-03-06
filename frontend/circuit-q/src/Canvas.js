@@ -164,23 +164,40 @@ const Canvas = props => {
         canvas.height = CANVASHEIGHT;
         canvas.width = CANVASWIDTH;
 
-        console.log(window.innerHeight);
-
         const context = canvas.getContext('2d');
 
+        beginCircuit(context, 700, 50);
+        drawWire(context, 50);
+        turnClockwise();
+        drawCapacitor(context);
+        turnClockwise();
+        drawWire(context, 50);
+        drawResistor(context);
+        drawWire(context, 50);
+        turnClockwise();
+        endCircuit(context);
 
+        beginCircuit(context, 700, 50);
+        drawWire(context, 50);
+        turnClockwise();
+        drawWire(context, 100);
+        turnClockwise();
+        drawWire(context, 50);
+        drawResistor(context);
+        drawWire(context, 50);
+        turnClockwise();
+        endCircuit(context);
 
-        beginCircuit(context, 10, 10);
+        beginCircuit(context, 700, 50);
         drawWire(context, 50);
         turnClockwise();
         drawWire(context, 150);
         turnClockwise();
         drawWire(context, 50);
-        drawInductor(context);
+        drawResistor(context);
         drawWire(context, 50);
         turnClockwise();
         endCircuit(context);
-
         
         
     } )

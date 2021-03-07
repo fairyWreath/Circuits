@@ -300,8 +300,8 @@
         }
 
         this.cycles = cycles;
-        console.log(this.mst);
-        return k;
+        // console.log(this.mst);
+        return cycles;
     }
 
     pruneGraph(adjMat) {
@@ -457,7 +457,7 @@ function generateRandom(row = 0, col = 0) {
                     res[i][j] = 0;
                 }
                 else {
-                    var intRand = randomIntFromInterval(1, 1);
+                    var intRand = randomIntFromInterval(0, 1);
                     res[i][j] = intRand;
                 }
             }
@@ -472,7 +472,7 @@ function generateRandom(row = 0, col = 0) {
                     res[i][j] = -1;
                 }
                 else {
-                    var intRand = randomIntFromInterval(1, 1);
+                    var intRand = randomIntFromInterval(0, 1);
                     res[i][j] = intRand;
                 }
             }
@@ -498,4 +498,5 @@ cg.generateGraph(testlist, 5, 5);
 
 
 cg.generateMST();
-console.log(cg.findCycles());
+var tes = cg.findCycles();
+console.log(tes.length);

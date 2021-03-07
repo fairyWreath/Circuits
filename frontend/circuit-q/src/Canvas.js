@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, forwardRef,  useImperativeHandle } from 'react'
 import {Button, Grid, TextField, Box, Typography, Container, withStyles, spacing} from '@material-ui/core';
-import {generateRandom} from './Engine.js';
+import {generateRandom, CircuitGraph} from './Engine.js';
 
 var ix;
 var iy;
@@ -10,7 +10,7 @@ var d;
 var dx;
 var dy;
 
-const CANVASWIDTH = window.innerWidth;
+const CANVASWIDTH = 1500;
 const CANVASHEIGHT = 270;
 
 const Canvas = props => {
@@ -191,8 +191,8 @@ const Canvas = props => {
         var beginX = window.innerWidth / 2 -  (circuitArr[0].length * 50) / 2;
 
         for(let i = 0; i < arr.length; i++) {
-            if (i % 2 == 0) {;
-                for (let j = 0; j < arr.length; j++) {
+            if (i % 2 == 0) {
+                for (let j = 0; j < arr[0].length; j++) {
                     if (j == 0) {
                         beginNormal(ctx, beginX, beginY);
                         drawWire(ctx, 50);
@@ -211,7 +211,12 @@ const Canvas = props => {
                         } 
 
                         if (arr[i][j] === 0) {
-                            drawWire(ctx, 50);
+                            if (j == arr[0].length - 1) {
+                                if (arr[0].length < arr.length) drawWire(ctx, 25);
+                                else drawWire(ctx, 50);
+                            }
+                            else
+                                drawWire(ctx, 50);
                         }
                         else if (arr[i][j] === 1) {
                             drawResistor(ctx);
@@ -236,7 +241,7 @@ const Canvas = props => {
                 var baseX = ix;
                 var baseY = iy;
            
-                for (let j = 0; j < arr.length; j++) {
+                for (let j = 0; j < arr[0].length; j++) {
                     if (j == 0) {
                         beginNormal(ctx, baseX, baseY);
                         turnClockwise(ctx);
@@ -291,8 +296,22 @@ const Canvas = props => {
 
     var circuitArr = [];
 
+    var CG = new CircuitGraph(0, 0);
+
     const newCircuit = () => {
-        circuitArr = generateRandom();
+        circuitArr = generateRandom(3, 3);
+        var twod = CG.generateGraph(circuitArr, circuitArr.length, circuitArr[0].length);
+        
+        // console.log(twod);
+
+        // var cys = CG.findCycles();
+        // for(let i = 0; i < cys.length; i++) {
+        //     var str = "";
+        //     for(let j = 0; j < cys[i].length; j++)
+        //         str += cys[i][j].toString();
+        //     console.log(str);
+        // }
+        // console.log(cys.length);
 
         // setup canvas based on circuit size
         const canvas = canvasRef.current;
@@ -305,6 +324,8 @@ const Canvas = props => {
 
         // call parent function here, passsed in throguh props
         props.resetInfo();  
+
+
     }
 
 

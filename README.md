@@ -1,3 +1,3 @@
-# Circuits-Randomizer-And-Solver
+# Circuit-Randomizer-And-Solver
 
 DeltaHacks 2021

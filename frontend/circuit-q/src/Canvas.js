@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, forwardRef,  useImperativeHandle } from 'react'
 import {Button, Grid, TextField, Box, Typography, Container, withStyles, spacing} from '@material-ui/core';
 import {generateRandom} from './Engine.js';
 
@@ -11,11 +11,17 @@ var dx;
 var dy;
 
 const CANVASWIDTH = window.innerWidth;
-const CANVASHEIGHT = 250;
+const CANVASHEIGHT = 270;
 
 const Canvas = props => {
     const canvasRef = useRef(null);
   
+    // useImperativeHandle(ref, () => ({
+
+  
+    
+    //   }));
+
     const draw = ctx => {
         ctx.fillStyle = '#000000'
         ctx.beginPath()
@@ -78,7 +84,6 @@ const Canvas = props => {
 
     const beginNormal = (ctx, a, b) => {
         ctx.lineWidth = 1.5;
-        ctx.strokeStyle = "#000";
         ctx.beginPath();
         x = a;
         y = b;
@@ -183,7 +188,8 @@ const Canvas = props => {
 
     const drawFrom2DArray = (arr, ctx) => {
         var beginY = 50;
-        var beginX = 550;
+        var beginX = window.innerWidth / 2 -  (circuitArr[0].length * 50) / 2;
+
         for(let i = 0; i < arr.length; i++) {
             if (i % 2 == 0) {;
                 for (let j = 0; j < arr.length; j++) {
@@ -192,21 +198,30 @@ const Canvas = props => {
                         drawWire(ctx, 50);
                         continue;
                     }
+                    if (arr[i][j] != -1) {
+                        var left = false;
+                        var right = false;
 
-                    if (arr[i][j] === 0) {
-                        drawWire(ctx, 50);
-                    }
-                    else if (arr[i][j] === 1) {
-                        drawResistor(ctx);
-                    }
-                    else if (arr[i][j] === 3) {
-                        drawCapacitor(ctx);
-                    }
-                    else if (arr[i][j] === 2) {
-                        drawInductor(ctx);
-                    }
-                    else if (arr[i][j] === 10) {
-                        drawPower(ctx);
+                        if (j > 0 && arr[i][j-1] != -1) left=true;
+                        if (j < arr[0].length - 2 && arr[i][j+1] != -1) right = true;
+
+                        if (left == false && right == false) continue;
+
+                        if (arr[i][j] === 0) {
+                            drawWire(ctx, 50);
+                        }
+                        else if (arr[i][j] === 1) {
+                            drawResistor(ctx);
+                        }
+                        else if (arr[i][j] === 3) {
+                            drawCapacitor(ctx);
+                        }
+                        else if (arr[i][j] === 2) {
+                            drawInductor(ctx);
+                        }
+                        else if (arr[i][j] === 10) {
+                            drawPower(ctx);
+                        }
                     }
                     else if (arr[i][j] === -1) {
                         moveCtx(ctx, 50);
@@ -286,7 +301,10 @@ const Canvas = props => {
 
         const context = canvas.getContext('2d');
 
-        drawFrom2DArray(circuitArr, context);   
+        drawFrom2DArray(circuitArr, context); 
+
+        // call parent function here, passsed in throguh props
+        props.resetInfo();  
     }
 
 
@@ -300,7 +318,7 @@ const Canvas = props => {
             spacing = {3}>
             <canvas ref={canvasRef} {...props}/>
                 <Grid item align="center" xs={12}>
-                        <Button variant="contained" color="primary" onClick={newCircuit}>
+                        <Button variant="contained" color="primary" onClick={() => {newCircuit();}}>    {/*send callback to parent*/}
                             New Circuit
                         </Button>
                 </Grid>

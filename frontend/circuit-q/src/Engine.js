@@ -1,6 +1,6 @@
 // import { usolve } from 'mathjs'
 
-class CircuitGraph {
+export default class CircuitGraph {
 
     constructor(nodes) {
         this.adjacencyMatrix = {};
@@ -80,10 +80,7 @@ class CircuitGraph {
         }
     }
 
-
-
-
-    generate(nodes, components) {
+    generateGraph(array, nodes) {
 
     }
 
@@ -115,11 +112,16 @@ function randomIntFromInterval(min, max) { // min and max included
 }
 
 
-export function generateRandom() {
+export function generateRandom(row = 0, col = 0) {
     var res = [];
 
-    var intRow = randomIntFromInterval(5, 5);
-    var intCol = randomIntFromInterval(5, 5);
+    var intRow = row;
+    var intCol = col;
+    if (row == 0)
+        intRow = randomIntFromInterval(3, 4);
+    
+    if (col == 0)
+        intCol = randomIntFromInterval(3, 4);
 
     console.log(intRow);
     console.log(intCol);
@@ -146,7 +148,7 @@ export function generateRandom() {
                     res[i][j] = 0;
                 }
                 else {
-                    var intRand = randomIntFromInterval(0, 3);
+                    var intRand = randomIntFromInterval(-1, 3);
                     res[i][j] = intRand;
                 }
             }
@@ -161,7 +163,7 @@ export function generateRandom() {
                     res[i][j] = -1;
                 }
                 else {
-                    var intRand = randomIntFromInterval(0, 3);
+                    var intRand = randomIntFromInterval(-1, 3);
                     res[i][j] = intRand;
                 }
             }
@@ -173,8 +175,3 @@ export function generateRandom() {
     return res;
 }
 
-
-
-
-var test = generateRandom();
-console.log(test);

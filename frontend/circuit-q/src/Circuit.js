@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, forwardRef,  useImperativeHandle } from "react";
 import {HEIGHT, WIDTH} from "./constants";
 import "./style.css";
 import Canvas from "./Canvas";
@@ -15,6 +15,7 @@ const styles = theme => ({
 
 var CORRECTANSWER = 50.34;
 
+
 export default class Circuit extends React.Component {
     constructor(props) {
         super(props);
@@ -26,6 +27,7 @@ export default class Circuit extends React.Component {
             lastAnswer: '',
             qVariable: ''
         };
+
     }
 
     componentDidMount() {
@@ -94,11 +96,6 @@ export default class Circuit extends React.Component {
                 correctInfo = (
                     <div>
                         You are correct!
-                        <Grid item>
-                            <Button variant="contained" color="primary" onClick={this.resetInfo}>
-                                New Question
-                            </Button>
-                        </Grid>
                     </div>
                 )
             }
@@ -134,7 +131,8 @@ export default class Circuit extends React.Component {
             >
 
             <Grid item xs = {12}>
-                <Canvas />
+                {/* pass in parent function */}
+                <Canvas resetInfo={this.resetInfo}/>
             </Grid>
 
             <Grid item>
@@ -155,7 +153,6 @@ export default class Circuit extends React.Component {
                 </Grid>
             </Grid>
 
-            
 
             <Grid item xs={12} align="center">
                 {info}

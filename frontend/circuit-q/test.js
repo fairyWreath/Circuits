@@ -10,6 +10,12 @@
         this.vSources = {};
         this.nodeValues = {};
 
+        // for cycle base
+        this.parentMap = [];
+        this.used = [];     // contains sets
+        this.stack = [];
+        this.cycles = [];       // contains verctices, in order of their cycles
+
         for(let i = 0; i < rows; i++) {
             this.adjacencyMatrix[i] = [];
             for(let j = 0; j < cols; j++) {
@@ -36,6 +42,9 @@
     addEdge(source, destination) {
         this.adjacencyMatrix[source][destination] = 1;
         this.adjacencyMatrix[destination][source] = 1;
+
+        if(!this.adjacencyList[source].includes(destination)) this.adjacencyList[source].push(destination);
+        if(!this.adjacencyList[destination].includes(source)) this.adjacencyList[destination].push(source);
     }
 
     // 1 for resistor
@@ -66,18 +75,25 @@
             }
         }
 
-        for(var i = 0; i < nodes; i++) {
+        for(let i = 0; i < nodes; i++) {
             this.vSources[i] = [];
             for(var j = 0; j < nodes; j++) {
                 this.vSources[i].push(0);
             }
         }
 
+        this.adjacencyList = [];
+        for(let i = 0; i < nodes; i++) {
+            this.adjacencyList[i] = [];
+        }
+
+
         this.nodes = nodes;
     }
 
     printCircuit() {
         console.log(this.adjacencyMatrix);
+        console.log(this.adjacencyList);
         console.log(this.resistors);
         console.log(this.vSources);
     }
@@ -183,9 +199,14 @@
                         var connector = array[ii + 1][jj];
                         var source = twoDNodes[i][j];
                         var dest = twoDNodes[i+ 1][j];
+                        // console.log("Edge between " + source + " and " + dest + 
+                        // " with connector" + connector);
                         if (source !== dest) {
+                            this.addEdge(source, dest);
                             if (connector === 1) {
                                 this.addResistor(source, dest);
+                                // console.log("added Edge between " + source + " and " + dest + 
+                                // " with connector" + connector);
                             }
                             else if (connector === 10) {     // v source
                                 this.addVSource(source, dest);
@@ -197,6 +218,73 @@
             }
             i++;
         }
+    }
+
+    findCycleBase() {
+        // for cycle base
+        var parentMap = [];
+        var used = [];     // contains sets
+        var stack = [];
+        var cycles = [];       // contains verctices, in order of their cycles
+
+        for(let i = 0; i < this.nodes; i++) {
+            if (parentMap.includes[i]) continue;
+
+            used = [];
+            
+            parentMap[i] = i;
+            used[i] = new Set();       // new hashset 
+            stack.push(i);
+
+            // Do the walk. It is a BFS with
+            // a LIFO instead of the usual
+            // FIFO. Thus it is easier to 
+            // find the cycles in the tree.
+            while(stack.length !== 0) {
+                var current = stack.pop();
+                var currentUsed = used[i];
+
+                for(let j = 0; j < this.adjacencyList[i].length; j++) {
+                    var neighbour = this.adjacencyList[i][j];
+
+                    // if (neighbour == current) neighbour = current;
+
+                    // found new node
+                    if(!used[neighbour]) {
+                        parentMap[neighbour] = current;
+                        var neighbourUsed = new Set();
+                        neighbourUsed.add(current);
+                        used[neighbour] = neighbourUsed;
+                        stack.push(neighbour);
+                    }
+
+                    else if (neighbour == current) {
+                        // found a self loop
+                        var cycle = [];
+                        cycle.push(current);
+                        cycles.push(cycle);
+                    }
+                    else if (!currentUsed.has(neighbour)) {
+                        // found a cycle
+                        var neighbourUsed = used[neighbour];
+                        var cycle = [];
+                        cycle.push(neighbour);
+                        cycle.push(current);
+                        var p = parentMap[current];
+                        while (!neighbourUsed.has(p)) {
+                            cycle.push(p);
+                            p = parentMap[p];
+                        }
+                        cycle.push(p);
+                        cycles.push(cycle);
+                        neighbourUsed.add(current);
+                    }
+
+                }
+            }
+        }
+
+        return cycles;
     }
 
     solve() {
@@ -309,3 +397,5 @@ cg.printCircuit();
 
 // generateGraph(testlist2, 3, 3);
 
+var cycles = cg.findCycleBase();
+console.log(cycles.length);

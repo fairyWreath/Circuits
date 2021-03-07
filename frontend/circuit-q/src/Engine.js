@@ -81,7 +81,65 @@ export default class CircuitGraph {
     }
 
     generateGraph(array, nodes) {
+        // we create an adjacency list based on our nodes
+        var twoDNodes = [];
+        var count = 0;
+        for(let i = 0; i < array.size(); i++) {
+            for(let j = 0; j < array[0].size(); j++) {
+                twoDNodes[i][j] = count;
+                count++;
+            }
+        }
 
+        // traverse our 2d array only visiting even th column in even th row(starting from 0)
+        count = 0;
+        var cols = array[0].length;
+        var rows = array[0].length;
+
+        var adjList = [];
+
+        for(let i = 0; i < array.size(); i += 2) {
+            for(let j = 0; j < array.size(); j += 2) {
+                var current = twoDNodes[i][j];  // get current node default value
+                // awlays check to the right and bottom
+                
+                // check to the right
+                if (j < cols - 1) {
+                    // if there is a wire between two nodes
+                    if (array[i][j + 1] == 0) {
+                        twoDNodes[i][j + 1] = current;
+                    }
+                    else if (array[i][j + 1] != -1) {
+                        var conn = twoDNodes[i][j + 1];
+                        
+                        if (!adjList[current]) adjList[current] = [];
+                        adjList[current].push(conn);
+                        
+                        if (!adjList[conn]) adjList[conn] = [];
+                        adjList[conn].push(current);
+                    }
+                }
+
+                // check bottom
+                if (i < rows - 1) {
+                    if (array[i + 1][j] == 0) {
+                        twoDNodes[i + 1][j] = current;
+                    }
+                    else if (array[i + 1][j] != -1) {
+                        var conn = twoDNodes[i + 1][j];
+                        
+                        if (!adjList[current]) adjList[current] = [];
+                        adjList[current].push(conn);
+                        
+                        if (!adjList[conn]) adjList[conn] = [];
+                        adjList[conn].push(current);
+                    }
+                }
+
+            }
+        }
+
+        console.log(adjList);
     }
 
     solve() {
@@ -118,10 +176,10 @@ export function generateRandom(row = 0, col = 0) {
     var intRow = row;
     var intCol = col;
     if (row == 0)
-        intRow = randomIntFromInterval(3, 4);
+        intRow = randomIntFromInterval(3, 5);
     
     if (col == 0)
-        intCol = randomIntFromInterval(3, 4);
+        intCol = randomIntFromInterval(3, 5);
 
     console.log(intRow);
     console.log(intCol);
@@ -175,3 +233,83 @@ export function generateRandom(row = 0, col = 0) {
     return res;
 }
 
+
+export function generateGraph(array, nodesRow, nodesCol) {
+    // we create an adjacency list based on our nodes
+    var twoDNodes = [];
+    var count = 0;
+    for(let i = 0; i < nodesRow; i++) {
+        twoDNodes[i] = [];
+        for(let j = 0; j < nodesCol; j++) {
+            twoDNodes[i][j] = count;
+            count++;
+        }
+    }
+
+    // traverse our 2d array only visiting even th column in even th row(starting from 0)
+   console.log(twoDNodes);
+    var cols = array[0].length;
+    var rows = array.length;
+
+    var adjList = [];
+    var j = 0;
+    var i = 0;
+    count = 0 ;
+    for(let ii = 0; ii < rows; ii += 2) {
+        j = 0;
+        for(let jj = 0; jj < cols; jj += 2) {
+            var current = twoDNodes[i][j];  // get current node default value
+            // awlays check to the right and bottom
+            
+            // check to the right
+            if (jj < cols - 1) {
+                // if there is a wire between two nodes
+                if (array[ii][jj + 1] == 0) {
+
+                    twoDNodes[i][j + 1] = current;
+                    // next node becomes current node
+                }
+                else if (array[ii][jj + 1] != -1) {
+                    var conn = twoDNodes[i][j + 1];
+                    
+                    if (!adjList[current]) adjList[current] = [];
+                    adjList[current].push(conn);
+                    
+                    if (!adjList[conn]) adjList[conn] = [];
+                    adjList[conn].push(current);
+                }
+            }
+
+            // check bottom
+            if (ii < rows - 1) {
+                if (array[ii + 1][jj] == 0) {
+                    twoDNodes[i + 1][j] = current;
+                }
+                else if (array[ii + 1][jj] != -1) {
+                    var conn = twoDNodes[i + 1][j];
+                    
+                    if (!adjList[current]) adjList[current] = [];
+                    adjList[current].push(conn);
+                    
+                    if (!adjList[conn]) adjList[conn] = [];
+                    adjList[conn].push(current);
+                }
+            }
+            j++;
+        }
+        i++;
+    }
+
+    console.log(adjList);
+}
+
+// var test = generateRandom(3, 4);
+// console.log(test);
+
+var testlist = [[ 0, 2, 0, 0, 0 ],
+[ 0, -1, -1, -1, 1 ],
+[ 0, 1, 0, 0, 0 ],
+[ 0, -1, 1, -1, 1 ],
+[ 0, 1, 0, 0, 0 ]];
+
+generateGraph(testlist, 3, 3);

@@ -199,13 +199,16 @@ const Canvas = props => {
                         continue;
                     }
                     if (arr[i][j] != -1) {
-                        var left = false;
-                        var right = false;
+                        var left = true;
+                        var right = true;
 
-                        if (j > 0 && arr[i][j-1] != -1) left=true;
-                        if (j < arr[0].length - 2 && arr[i][j+1] != -1) right = true;
-
-                        if (left == false && right == false) continue;
+                        if (j == 0 || (j > 0 && arr[i][j-1] == -1)) left=true;
+                        if (j == arr[0].length - 1 || (j < arr[0].length - 1 && arr[i][j+1] == -1)) right = true;
+                        
+                        if (!left && !right) {
+                            console.log("yes");
+                            continue;
+                        } 
 
                         if (arr[i][j] === 0) {
                             drawWire(ctx, 50);
@@ -241,7 +244,6 @@ const Canvas = props => {
 
                     if (arr[i][j] === 0) {
                         drawWire(ctx, 50);
-                        console.log("wire drawn")
                     }
                     else if (arr[i][j] === 1) {
                         drawResistor(ctx);
@@ -261,8 +263,6 @@ const Canvas = props => {
                     
                     moveCtx(ctx, -50);
                     turnCounterClockwise(ctx);
-                    console.log(arr.length);
-                    console.log(j);
                      if (j == 0) {
                         moveCtx(ctx, 75);
                      }
